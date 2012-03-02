@@ -1,0 +1,13 @@
+.boggle-board .cell {
+  border: none;
+  background-color: #fff;
+  width: 2em;
+  height: 2em;
+  padding: 0;
+  margin: 2px;
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 5px;
+}

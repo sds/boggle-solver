@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="en-us" http-equiv="Content-Language" />
+    <meta content="A Boggle Solver written by Shane da Silva" name="description" />
+    <link href="css/index.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <link href="css/boggle.css" media="screen, projection" rel="stylesheet" type="text/css" />
+    <title>Boggle Solver &mdash; by Shane da Silva</title>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="instructions">
+      <p>
+        Fill in the letters for the Boggle puzzle you wish to solve,
+        then click <b>Solve</b> or hit Enter.
+      </p>
+    </div>
+    <div id="boggle-panel">
+      <div id="controls">
+        <label>Size</label>
+        <input type="number" id="num-rows" min="2" max="8" value="2" />
+        &#x2716;
+        <input type="number" id="num-cols" min="2" max="8" value="2" />
+        <button id="solve-button">Solve</button>
+      </div>
+      <p id="loading-message">
+      Loading dictionary...
+      </p>
+      <div id="board" class="boggle-board">
+      </div>
+    </div>
+    <div id="words-panel">
+      <p id="num-words"></p>
+      <p id="solving-message">Solving puzzle...</p>
+      <ul id="word-list"></ul>
+    </div>
+
+    <script type="text/javascript" src="js/trie.js"></script>
+    <script type="text/javascript" src="js/boggle.js"></script>
+    <script type="text/javascript">
+    var boardPanel = $('#boggle-panel'),
+        boardDiv = $('#board'),
+        board,
+        numRows = $('#num-rows'),
+        numCols = $('#num-cols'),
+        wordPanel = $('#words-panel'),
+        wordList = $('#word-list'),
+        dict = new Trie(),
+        urlParams = {};
+    (function () {
+      var e,
+          a = /\+/g,  // Regex for replacing addition symbol with a space
+          r = /([^&=]+)=?([^&]*)/g,
+          d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+          q = window.location.search.substring(1);
+
+      while (e = r.exec(q)) {
+        urlParams[d(e[1])] = d(e[2]);
+      }
+    })();
+
+    wordPanel.hide();
+
+    var boardSizeChanged = function (evt) {
+      boardDiv.empty();
+      board = Boggle.createBoard(numRows.val(), numCols.val(), boardDiv);
+    };
+
+    numRows.val(urlParams.rows || 4);
+    numCols.val(urlParams.cols || 4);
+    $('#num-rows, #num-cols').click(boardSizeChanged)
+                             .change(boardSizeChanged);
+
+
+    $.get('data/length-up-to-7.txt')
+    .success(function (data) {
+      var words = data.split('\n');
+      for (var i = words.length - 1; i >= 0; i--) {
+        dict.insert(words[i]);
+      }
+
+      $('#loading-message').hide();
+      boardSizeChanged();
+
+      if (urlParams.text) {
+        var rows = numRows.val(),
+            cols = numCols.val(),
+            count = 0;
+        for (var r = 0; r < rows; r++) {
+          for (var c = 0; c < cols; c++) {
+            $('#cell' + count).val(urlParams.text[count]);
+            $('#cell' + count).change();
+            count++;
+          }
+        }
+        $('#solve-button').click();
+      }
+    })
+    .error(function () {
+      $('#loading-message').text("There was a problem loading the dictionary");
+    });
+
+    $('#solve-button').click(function () {
+      var rows = numRows.val(), cols = numCols.val(), count = 0;
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          if ($('#cell' + count).val() == "") {
+            return;
+          }
+          count++;
+        }
+      }
+
+      wordList.empty();
+      $("#solving-message").show();
+      wordPanel.show();
+
+      // Find and sort words by longest first
+      var words = Boggle.solve(board, dict).sort(function (a, b) {
+        if (a.length == b.length) {
+          return (a < b) ? 1 : -1;
+        }
+        return b.length - a.length;
+      });
+
+      // Remove duplicates
+      words = words.filter(function (item, idx, arr){
+        return idx == arr.indexOf(item);
+      });
+
+      $("#solving-message").hide();
+
+      $('#num-words').text(words.length + " words");
+      for (var i = 0; i < words.length; i++) {
+        wordList.append('<li>' + words[i] + '</li>');
+      }
+    });
+
+    // Hitting Enter solves puzzle
+    $(document).keyup(function (evt) {
+      if (evt.keyCode == 13) {
+        $('#solve-button').click();
+      }
+    });
+    </script>
+  </body>
+</html>
