@@ -2,7 +2,7 @@ Boggle Solver
 =============
 
 View the demo at
-http://smdasilva.github.com/boggle-solver/?rows=4&cols=4&text=boggleisafungame
+http://sds.github.com/boggle-solver/?rows=4&cols=4&text=boggleisafungame
 
 After having played a couple of games of Boggle, I found myself frustrated by my
 inability to conjure up words as quickly as my competitors. Thus I decided to
