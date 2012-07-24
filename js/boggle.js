@@ -83,30 +83,16 @@ var Boggle = (function () {
       charStack.push(boggle.charAt(row, col));
       visited[row][col] = true;
 
-      if (row > 0) {
-        if (col > 0) {
-          findWords(row - 1, col - 1, node);
-        }
-        findWords(row - 1, col, node);
-        if (col < cols - 1) {
-          findWords(row - 1, col + 1, node);
-        }
-      }
+      for (var dx = -1; dx <= 1; dx++) {
+        var c = col + dx;
+        if (c < 0 || c >= cols) continue;
 
-      if (col > 0) {
-        findWords(row, col - 1, node);
-      }
-      if (col < cols - 1) {
-        findWords(row, col + 1, node);
-      }
+        for (var dy = -1; dy <= 1; dy++) {
+          var r = row + dy;
+          if (r < 0 || r >= rows) continue;
+          if (dx == 0 && dy == 0) continue;
 
-      if (row < rows - 1) {
-        if (col > 0) {
-          findWords(row + 1, col - 1, node);
-        }
-        findWords(row + 1, col, node);
-        if (col < cols - 1) {
-          findWords(row + 1, col + 1, node);
+          findWords(r, c, node);
         }
       }
 
