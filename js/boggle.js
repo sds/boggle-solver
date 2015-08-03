@@ -65,6 +65,9 @@ var Boggle = (function () {
     return board;
   }
 
+  /**
+   * Solves a Boggle board using the given trie as a dictionary.
+   */
   var solve = function (boggle, trie) {
     var rows = boggle.getNumRows();
     var cols = boggle.getNumCols();
@@ -120,67 +123,6 @@ var Boggle = (function () {
     return words;
   };
 
-  /**
-   * Solves a Boggle board using the given trie as a dictionary.
-   */
-  /*
-  var solve = function (boggle, trie) {
-    var rows = boggle.getNumRows();
-    var cols = boggle.getNumCols();
-
-    var charStack = new Array();
-    var words = new Array();
-
-    var findWords = function (row, col, node) {
-      if (visited[row][col]) return;
-      if (!node || !node.has(boggle.charAt(row, col))) return;
-      node = node.next(boggle.charAt(row, col));
-
-      charStack.push(boggle.charAt(row, col));
-      visited[row][col] = true;
-
-      for (var dx = -1; dx <= 1; dx++) {
-        var c = col + dx;
-        if (c < 0 || c >= cols) continue;
-
-        for (var dy = -1; dy <= 1; dy++) {
-          var r = row + dy;
-          if (r < 0 || r >= rows) continue;
-          if (dx == 0 && dy == 0) continue;
-
-          findWords(r, c, node);
-        }
-      }
-
-      if (node.isEndOfWord) {
-        var s = "";
-        for (var i = 0; i < charStack.length; i++) {
-          s = s + charStack[i];
-        }
-        words.push(s);
-      }
-
-      visited[row][col] = false;
-      charStack.pop();
-    };
-
-    var visited = new Array(rows);
-    for (var row = 0; row < rows; row++) {
-      visited[row] = new Array(cols);
-      for (var col = 0; col < cols; col++) {
-        visited[row][col] = false;
-      }
-    }
-
-    for (var r = 0; r < rows; r++) {
-      for (var c = 0; c < cols; c++) {
-        findWords(r, c, trie);
-      }
-    }
-
-    return words;
-  };
-*/
   return {
     createBoard: createBoard,
     solve: solve,
