@@ -65,9 +65,65 @@ var Boggle = (function () {
     return board;
   }
 
+  var solve = function (boggle, trie) {
+    var rows = boggle.getNumRows();
+    var cols = boggle.getNumCols();
+
+    var words = new Array();
+
+    var findWordsInRow = function (row, node) {
+      for (var c = 0; c < cols; c++) {
+        var rowNode = node;
+        var charStack = new Array();
+        for (var dc = c; dc < cols; dc++) {
+          if (!rowNode || !rowNode.has(boggle.charAt(row, dc))) break;
+          rowNode = rowNode.next(boggle.charAt(row, dc));
+          charStack.push(boggle.charAt(row, dc));
+          if (rowNode.isEndOfWord) {
+            var s = "";
+            for (var i = 0; i < charStack.length; i++) {
+              s = s + charStack[i];
+            }
+            words.push(s);
+          }
+        }
+      }
+    }
+
+    var findWordsInColumn = function (col, node) {
+      for (var r = 0; r < rows; r++) {
+        var colNode = node;
+        var charStack = new Array();
+        for (var dr = r; dr < rows; dr++) {
+          if (!colNode || !colNode.has(boggle.charAt(dr, col))) break;
+          colNode = colNode.next(boggle.charAt(dr, col));
+          charStack.push(boggle.charAt(dr, col));
+          if (colNode.isEndOfWord) {
+            var s = "";
+            for (var i = 0; i < charStack.length; i++) {
+              s = s + charStack[i];
+            }
+            words.push(s);
+          }
+        }
+      }
+    }
+
+    for (var r = 0; r < rows; r++) {
+      findWordsInRow(r, trie);
+    }
+
+    for (var c = 0; c < cols; c++) {
+      findWordsInColumn(c, trie);
+    }
+
+    return words;
+  };
+
   /**
    * Solves a Boggle board using the given trie as a dictionary.
    */
+  /*
   var solve = function (boggle, trie) {
     var rows = boggle.getNumRows();
     var cols = boggle.getNumCols();
@@ -124,7 +180,7 @@ var Boggle = (function () {
 
     return words;
   };
-
+*/
   return {
     createBoard: createBoard,
     solve: solve,
