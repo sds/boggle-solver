@@ -90,6 +90,13 @@ $('#solve-button').click(function () {
   }
 });
 
+$('#create-example-board-button').click(function () {
+  numRows = 6;
+  numCols = 6;
+  boardDiv.empty();
+  board = Boggle.createExampleBoard(boardDiv);
+});
+
 // Hitting Enter solves puzzle
 $(document).keyup(function (evt) {
   if (evt.keyCode == 13) {

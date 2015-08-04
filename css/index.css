@@ -33,7 +33,7 @@
   width: 2em;
 }
 
-#solve-button {
+#solve-button, #create-example-board-button {
   font-family: Helvetica;
   font-size: 1em;
   color: #333;

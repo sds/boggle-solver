@@ -65,6 +65,51 @@ var Boggle = (function () {
     return board;
   }
 
+  var createExampleBoard = function (div) {
+    var board = createBoard(6, 6, div);
+    // board.charAt(0, 0, 'B');
+    // board.charAt(0, 1, 'L');
+    // board.charAt(0, 2, 'E');
+    $('.cell[data-row=0][data-col=0]').val('B');
+    $('.cell[data-row=0][data-col=1]').val('L');
+    $('.cell[data-row=0][data-col=2]').val('E');
+    $('.cell[data-row=0][data-col=3]').val('T');
+    $('.cell[data-row=0][data-col=4]').val('A');
+    $('.cell[data-row=0][data-col=5]').val('G');
+    $('.cell[data-row=1][data-col=0]').val('B');
+    $('.cell[data-row=1][data-col=1]').val('I');
+    $('.cell[data-row=1][data-col=2]').val('D');
+    $('.cell[data-row=1][data-col=3]').val('E');
+    $('.cell[data-row=1][data-col=4]').val('L');
+    $('.cell[data-row=1][data-col=5]').val('T');
+    $('.cell[data-row=2][data-col=0]').val('C');
+    $('.cell[data-row=2][data-col=1]').val('T');
+    $('.cell[data-row=2][data-col=2]').val('O');
+    $('.cell[data-row=2][data-col=3]').val('A');
+    $('.cell[data-row=2][data-col=4]').val('L');
+    $('.cell[data-row=2][data-col=5]').val('A');
+    $('.cell[data-row=3][data-col=0]').val('H');
+    $('.cell[data-row=3][data-col=1]').val('T');
+    $('.cell[data-row=3][data-col=2]').val('C');
+    $('.cell[data-row=3][data-col=3]').val('C');
+    $('.cell[data-row=3][data-col=4]').val('O');
+    $('.cell[data-row=3][data-col=5]').val('H');
+    $('.cell[data-row=4][data-col=0]').val('L');
+    $('.cell[data-row=4][data-col=1]').val('L');
+    $('.cell[data-row=4][data-col=2]').val('A');
+    $('.cell[data-row=4][data-col=3]').val('H');
+    $('.cell[data-row=4][data-col=4]').val('Y');
+    $('.cell[data-row=4][data-col=5]').val('C');
+    $('.cell[data-row=5][data-col=0]').val('L');
+    $('.cell[data-row=5][data-col=1]').val('E');
+    $('.cell[data-row=5][data-col=2]').val('A');
+    $('.cell[data-row=5][data-col=3]').val('R');
+    $('.cell[data-row=5][data-col=4]').val('N');
+    $('.cell[data-row=5][data-col=5]').val('S');
+    $('.cell').trigger('change');
+    return board;
+  };
+
   /**
    * Solves a Boggle board using the given trie as a dictionary.
    */
@@ -125,6 +170,7 @@ var Boggle = (function () {
 
   return {
     createBoard: createBoard,
+    createExampleBoard: createExampleBoard,
     solve: solve,
     Board: Board,
   };
