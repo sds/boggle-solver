@@ -1,8 +1,8 @@
 var boardPanel = $('#boggle-panel'),
     boardDiv = $('#board'),
     board,
-    numRows = $('#num-rows'),
-    numCols = $('#num-cols'),
+    numRows = 4,
+    numCols = 4,
     wordPanel = $('#words-panel'),
     wordList = $('#word-list'),
     dict = new Trie(),
@@ -23,14 +23,8 @@ wordPanel.hide();
 
 var boardSizeChanged = function (evt) {
   boardDiv.empty();
-  board = Boggle.createBoard(numRows.val(), numCols.val(), boardDiv);
+  board = Boggle.createBoard(numRows, numCols, boardDiv);
 };
-
-numRows.val(urlParams.rows || 4);
-numCols.val(urlParams.cols || 4);
-$('#num-rows, #num-cols').click(boardSizeChanged)
-                         .change(boardSizeChanged);
-
 
 $.get('data/length-up-to-7.txt')
 .success(function (data) {
@@ -43,8 +37,8 @@ $.get('data/length-up-to-7.txt')
   boardSizeChanged();
 
   if (urlParams.text) {
-    var rows = numRows.val(),
-        cols = numCols.val(),
+    var rows = numRows,
+        cols = numCols,
         count = 0;
     for (var r = 0; r < rows; r++) {
       for (var c = 0; c < cols; c++) {
@@ -61,7 +55,7 @@ $.get('data/length-up-to-7.txt')
 });
 
 $('#solve-button').click(function () {
-  var rows = numRows.val(), cols = numCols.val(), count = 0;
+  var rows = numRows, cols = numCols, count = 0;
   for (var r = 0; r < rows; r++) {
     for (var c = 0; c < cols; c++) {
       if ($('#cell' + count).val() == "") {
@@ -94,6 +88,13 @@ $('#solve-button').click(function () {
   for (var i = 0; i < words.length; i++) {
     wordList.append('<li>' + words[i] + '</li>');
   }
+});
+
+$('#create-example-board-button').click(function () {
+  numRows = 6;
+  numCols = 6;
+  boardDiv.empty();
+  board = Boggle.createExampleBoard(boardDiv);
 });
 
 // Hitting Enter solves puzzle

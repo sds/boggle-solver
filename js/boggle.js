@@ -65,6 +65,51 @@ var Boggle = (function () {
     return board;
   }
 
+  var createExampleBoard = function (div) {
+    var board = createBoard(6, 6, div);
+    // board.charAt(0, 0, 'B');
+    // board.charAt(0, 1, 'L');
+    // board.charAt(0, 2, 'E');
+    $('.cell[data-row=0][data-col=0]').val('B');
+    $('.cell[data-row=0][data-col=1]').val('L');
+    $('.cell[data-row=0][data-col=2]').val('E');
+    $('.cell[data-row=0][data-col=3]').val('T');
+    $('.cell[data-row=0][data-col=4]').val('A');
+    $('.cell[data-row=0][data-col=5]').val('G');
+    $('.cell[data-row=1][data-col=0]').val('B');
+    $('.cell[data-row=1][data-col=1]').val('I');
+    $('.cell[data-row=1][data-col=2]').val('D');
+    $('.cell[data-row=1][data-col=3]').val('E');
+    $('.cell[data-row=1][data-col=4]').val('L');
+    $('.cell[data-row=1][data-col=5]').val('T');
+    $('.cell[data-row=2][data-col=0]').val('C');
+    $('.cell[data-row=2][data-col=1]').val('T');
+    $('.cell[data-row=2][data-col=2]').val('O');
+    $('.cell[data-row=2][data-col=3]').val('A');
+    $('.cell[data-row=2][data-col=4]').val('L');
+    $('.cell[data-row=2][data-col=5]').val('A');
+    $('.cell[data-row=3][data-col=0]').val('H');
+    $('.cell[data-row=3][data-col=1]').val('T');
+    $('.cell[data-row=3][data-col=2]').val('C');
+    $('.cell[data-row=3][data-col=3]').val('C');
+    $('.cell[data-row=3][data-col=4]').val('O');
+    $('.cell[data-row=3][data-col=5]').val('H');
+    $('.cell[data-row=4][data-col=0]').val('L');
+    $('.cell[data-row=4][data-col=1]').val('L');
+    $('.cell[data-row=4][data-col=2]').val('A');
+    $('.cell[data-row=4][data-col=3]').val('H');
+    $('.cell[data-row=4][data-col=4]').val('Y');
+    $('.cell[data-row=4][data-col=5]').val('C');
+    $('.cell[data-row=5][data-col=0]').val('L');
+    $('.cell[data-row=5][data-col=1]').val('E');
+    $('.cell[data-row=5][data-col=2]').val('A');
+    $('.cell[data-row=5][data-col=3]').val('R');
+    $('.cell[data-row=5][data-col=4]').val('N');
+    $('.cell[data-row=5][data-col=5]').val('S');
+    $('.cell').trigger('change');
+    return board;
+  };
+
   /**
    * Solves a Boggle board using the given trie as a dictionary.
    */
@@ -72,54 +117,52 @@ var Boggle = (function () {
     var rows = boggle.getNumRows();
     var cols = boggle.getNumCols();
 
-    var charStack = new Array();
     var words = new Array();
 
-    var findWords = function (row, col, node) {
-      if (visited[row][col]) return;
-      if (!node || !node.has(boggle.charAt(row, col))) return;
-      node = node.next(boggle.charAt(row, col));
-
-      charStack.push(boggle.charAt(row, col));
-      visited[row][col] = true;
-
-      for (var dx = -1; dx <= 1; dx++) {
-        var c = col + dx;
-        if (c < 0 || c >= cols) continue;
-
-        for (var dy = -1; dy <= 1; dy++) {
-          var r = row + dy;
-          if (r < 0 || r >= rows) continue;
-          if (dx == 0 && dy == 0) continue;
-
-          findWords(r, c, node);
+    var findWordsInRow = function (row, node) {
+      for (var c = 0; c < cols; c++) {
+        var rowNode = node;
+        var charStack = new Array();
+        for (var dc = c; dc < cols; dc++) {
+          if (!rowNode || !rowNode.has(boggle.charAt(row, dc))) break;
+          rowNode = rowNode.next(boggle.charAt(row, dc));
+          charStack.push(boggle.charAt(row, dc));
+          if (rowNode.isEndOfWord) {
+            var s = "";
+            for (var i = 0; i < charStack.length; i++) {
+              s = s + charStack[i];
+            }
+            words.push(s);
+          }
         }
       }
+    }
 
-      if (node.isEndOfWord) {
-        var s = "";
-        for (var i = 0; i < charStack.length; i++) {
-          s = s + charStack[i];
+    var findWordsInColumn = function (col, node) {
+      for (var r = 0; r < rows; r++) {
+        var colNode = node;
+        var charStack = new Array();
+        for (var dr = r; dr < rows; dr++) {
+          if (!colNode || !colNode.has(boggle.charAt(dr, col))) break;
+          colNode = colNode.next(boggle.charAt(dr, col));
+          charStack.push(boggle.charAt(dr, col));
+          if (colNode.isEndOfWord) {
+            var s = "";
+            for (var i = 0; i < charStack.length; i++) {
+              s = s + charStack[i];
+            }
+            words.push(s);
+          }
         }
-        words.push(s);
-      }
-
-      visited[row][col] = false;
-      charStack.pop();
-    };
-
-    var visited = new Array(rows);
-    for (var row = 0; row < rows; row++) {
-      visited[row] = new Array(cols);
-      for (var col = 0; col < cols; col++) {
-        visited[row][col] = false;
       }
     }
 
     for (var r = 0; r < rows; r++) {
-      for (var c = 0; c < cols; c++) {
-        findWords(r, c, trie);
-      }
+      findWordsInRow(r, trie);
+    }
+
+    for (var c = 0; c < cols; c++) {
+      findWordsInColumn(c, trie);
     }
 
     return words;
@@ -127,6 +170,7 @@ var Boggle = (function () {
 
   return {
     createBoard: createBoard,
+    createExampleBoard: createExampleBoard,
     solve: solve,
     Board: Board,
   };
